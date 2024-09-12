@@ -1,6 +1,7 @@
 import requests
 import allure
 from utils.helpers import register_new_courier_and_return_login_password, BASE_URL
+from utils.helpers import generate_random_string
 
 class TestDeleteCourier:
 
@@ -29,14 +30,14 @@ class TestAcceptOrder:
     @allure.title("Принятие заказа успешно")
     def test_accept_order_success(self, courier):
         order_payload = {
-            "firstName": "Test",
-            "lastName": "User",
+            "firstName": generate_random_string(10),
+            "lastName": generate_random_string(10),
             "address": "Test street",
             "metroStation": 4,
             "phone": "+7 800 355 35 35",
             "rentTime": 5,
             "deliveryDate": "2024-06-01",
-            "comment": "Test comment",
+            "comment": generate_random_string(10),
             "color": ["BLACK"]
         }
         order_response = requests.post(f'{BASE_URL}/orders', json=order_payload)
@@ -86,14 +87,14 @@ class TestGetOrderByTrack:
     @allure.title("Получение заказа по номеру трека")
     def test_get_order_by_track(self):
         order_payload = {
-            "firstName": "Test",
-            "lastName": "User",
-            "address": "Test street",
+            "firstName": generate_random_string(10),
+            "lastName": generate_random_string(10),
+            "address": f"{generate_random_string(10)} street",
             "metroStation": 4,
             "phone": "+7 800 355 35 35",
             "rentTime": 5,
             "deliveryDate": "2024-06-01",
-            "comment": "Test comment",
+            "comment": generate_random_string(10),
             "color": ["BLACK"]
         }
         order_response = requests.post(f'{BASE_URL}/orders', json=order_payload)
