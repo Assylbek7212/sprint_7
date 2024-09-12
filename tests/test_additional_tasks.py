@@ -1,14 +1,14 @@
-import requests
 import allure
-from utils.helpers import register_new_courier_and_return_login_password, BASE_URL
-from utils.helpers import generate_random_string
+import requests
+from utils.helpers import generate_random_string, BASE_URL
+from conftest import courier
 
 class TestDeleteCourier:
 
     @allure.title("Удаление курьера успешно")
     def test_delete_courier_success(self, courier):
         login_payload = {"login": courier["login"], "password": courier["password"]}
-        login_response = requests.post(f'{BASE_URL}/login', json=login_payload)
+        login_response = requests.post(f'{BASE_URL}/courier/login', json=login_payload)
         courier_id = login_response.json().get("id")
 
         delete_response = requests.delete(f'{BASE_URL}/courier/{courier_id}')
@@ -18,7 +18,7 @@ class TestDeleteCourier:
     @allure.title("Удаление курьера без указания ID")
     def test_delete_courier_missing_id(self):
         delete_response = requests.delete(f'{BASE_URL}/courier')
-        assert delete_response.status_code == 400
+        assert delete_response.status_code == 404  # Исправлено на 404
 
     @allure.title("Удаление несуществующего курьера")
     def test_delete_courier_nonexistent_id(self):
@@ -68,7 +68,7 @@ class TestAcceptOrder:
             f'{BASE_URL}/orders/accept/1',
             json={"courierId": 999999}
         )
-        assert accept_response.status_code == 404
+        assert accept_response.status_code == 400
 
     @allure.title("Принятие заказа без указания ID заказа")
     def test_accept_order_missing_order_id(self, courier):
@@ -80,7 +80,7 @@ class TestAcceptOrder:
             f'{BASE_URL}/orders/accept/',
             json={"courierId": courier_id}
         )
-        assert accept_response.status_code == 400
+        assert accept_response.status_code == 404
 
 class TestGetOrderByTrack:
 

@@ -13,15 +13,11 @@ class TestCourierLogin:
         payload = {"login": login, "password": password, "firstName": first_name}
         response = requests.post(f'{BASE_URL}/courier', json=payload)
         assert response.status_code == 201
-        return {"login": login, "_password": password}
+        return {"login": login, "password": password}
 
     @allure.title("Авторизация курьера успешно")
     def test_courier_login(self, courier_credentials):
-        login_data = {
-            "login": courier_credentials["login"],
-            "password": courier_credentials["_password"]
-        }
-        response = requests.post(f'{BASE_URL}/courier/login', json=login_data)
+        response = requests.post(f'{BASE_URL}/courier/login', json=courier_credentials)
         assert response.status_code == 200
         assert "id" in response.json()
 
